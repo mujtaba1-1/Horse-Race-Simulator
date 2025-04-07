@@ -1,12 +1,11 @@
 import java.util.concurrent.TimeUnit;
-import java.lang.Math;
 
 /**
  * A three-horse race, each horse running in its own lane
  * for a given distance
  * 
- * @author McRaceface
- * @version 1.0
+ * @author Muhammad Mujtaba Butt
+ * @version 2.0
  */
 public class Race
 {
@@ -126,6 +125,7 @@ public class Race
         
     /** 
      * Determines if a horse has won the race
+     * If they have won, print a winning message to the terminal
      *
      * @param theHorse The horse we are testing
      * @return true if the horse has won, false otherwise.
@@ -134,6 +134,7 @@ public class Race
     {
         if (theHorse.getDistanceTravelled() == raceLength)
         {
+            System.out.println(theHorse.getName() + " has won the race!");
             return true;
         }
         else
