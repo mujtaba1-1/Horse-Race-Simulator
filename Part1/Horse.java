@@ -7,7 +7,7 @@
  * to get and set the horse's attributes.
  * 
  * @author Muhammad Mujtaba Butt
- * @version 1.0
+ * @version 2.0
  */
 public class Horse {
     //Fields of class Horse
@@ -30,6 +30,11 @@ public class Horse {
     }
     
     //Private methods
+    /**
+     * Validates the confidence level of the horse
+     * to ensure it does not exceed 1.0 or fall below 0.0.
+     * If it does, it sets the confidence to 0.99 or 0.01 respectively.
+     */
     private double validateConfidence(double confidence) {
         if (confidence >= 1.0) {
             return 0.99;
