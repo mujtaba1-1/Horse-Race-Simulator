@@ -1,13 +1,22 @@
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+
 class Main {
     public static void main(String[] args) {
-        Horse horse = new Horse('T', "Thunder", 0.5);
+        PrintStream printStream = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+        System.setOut(printStream);
 
-        System.out.println(horse.getConfidence());
+        Race race = new Race(30);
+
+        Horse horse1 = new Horse('A', "Alpha", 0.8);
+        race.addHorse(horse1, 1);
         
-        horse.setConfidence(-0.5);
-        System.out.println(horse.getConfidence());
+        Horse horse2 = new Horse('B', "Bravo", 0.6);
+        race.addHorse(horse2, 2);
 
-        horse.setConfidence(1.6);
-        System.out.println(horse.getConfidence());
+        Horse horse3 = new Horse('T', "Thunder", 0.5);
+        race.addHorse(horse3, 3);
+
+        race.startRace();
     }
 }
