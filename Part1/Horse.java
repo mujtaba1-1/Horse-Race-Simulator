@@ -6,11 +6,10 @@
  * has fallen during the race. It implements all the methods needed
  * to get and set the horse's attributes.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Muhammad Mujtaba Butt
+ * @version 1.0
  */
-public class Horse
-{
+public class Horse {
     //Fields of class Horse
     private String name;
     private char symbol;
@@ -22,65 +21,63 @@ public class Horse
     /**
      * Constructor for objects of class Horse
      */
-    public Horse(char horseSymbol, String horseName, double horseConfidence)
-    {
+    public Horse(char horseSymbol, String horseName, double horseConfidence) {
        name = horseName;
        symbol = horseSymbol;
-       confidence = horseConfidence;
+       confidence = validateConfidence(horseConfidence);
        distanceTravelled = 0;
        hasFallen = false;
     }
     
-    
-    
-    //Other methods of class Horse
-    public void fall()
-    {
-        hasFallen = true;
-    }
-    
-    public double getConfidence()
-    {
+    //Private methods
+    private double validateConfidence(double confidence) {
+        if (confidence >= 1.0) {
+            return 0.99;
+        }
+        else if (confidence <= 0.0) {
+            return 0.01;
+        }
         return confidence;
     }
     
-    public int getDistanceTravelled()
-    {
+    //Other methods of class Horse
+    public void fall() {
+        hasFallen = true;
+    }
+    
+    public double getConfidence() {
+        return confidence;
+    }
+    
+    public int getDistanceTravelled() {
         return distanceTravelled;
     }
     
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
     
-    public char getSymbol()
-    {
+    public char getSymbol() {
         return symbol;
     }
     
-    public void goBackToStart()
-    {
+    public void goBackToStart() {
         distanceTravelled = 0;
     }
     
-    public boolean hasFallen()
-    {
+    public boolean hasFallen() {
         return hasFallen;
     }
 
-    public void moveForward()
-    {
+    public void moveForward() {
         distanceTravelled++;
     }
 
-    public void setConfidence(double newConfidence)
-    {
-        confidence = newConfidence;
+    public void setConfidence(double newConfidence) {
+        confidence = validateConfidence(newConfidence);
     }
     
-    public void setSymbol(char newSymbol)
-    {
+    public void setSymbol(char newSymbol) {
         symbol = newSymbol;
     }
     
