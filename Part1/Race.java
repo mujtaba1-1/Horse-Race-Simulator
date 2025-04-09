@@ -145,12 +145,32 @@ public class Race {
             return false;
         }
     }
+
+    /**
+     * Clear the screen
+     * This method is OS dependent and will only work on Windows
+     * 
+     * @throws Exception if there is an error clearing the screen
+     */
+    private void clearScreen() {
+        try {
+            String os = System.getProperty("os.name").toLowerCase(); //get the OS name
+
+            if (os.contains("win")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            }
+        } catch (Exception e) {
+            System.out.println("Error clearing screen: " + e.getMessage());
+        }
+    }
     
     /***
      * Print the race on the terminal
      */
     private void printRace() {
-        System.out.print('\u000C'); //clear the screen
+        System.out.print("\033[H\033[2J"); //Moves the cursor to the top left of the screen
+        System.out.flush();
+        clearScreen(); //clear the screen
         
         multiplePrint('=',raceLength+3); //top edge of track
         System.out.println();
@@ -189,7 +209,7 @@ public class Race {
         //if the horse has fallen then print dead
         //else print the horse's symbol
         if(theHorse.hasFallen()) {
-            System.out.print('\u2322');
+            System.out.print('\u2620'); //skull and crossbones
         }
         else {
             System.out.print(theHorse.getSymbol());
