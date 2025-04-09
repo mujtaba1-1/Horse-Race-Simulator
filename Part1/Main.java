@@ -6,7 +6,7 @@ class Main {
         PrintStream printStream = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         System.setOut(printStream);
 
-        Race race = new Race(30);
+        Race race = new Race(10);
 
         Horse horse1 = new Horse('A', "Alpha", 0.8);
         race.addHorse(horse1, 1);
