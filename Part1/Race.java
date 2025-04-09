@@ -43,12 +43,12 @@ public class Race {
     }
 
     /**
-     * Initialise the horses to null
+     * Initialise the horses to default horses
      */
     private void initialiseHorses() {
-        lane1Horse = null;
-        lane2Horse = null;
-        lane3Horse = null;
+        lane1Horse = new Horse('A', "Alpha", 0.8);
+        lane2Horse = new Horse('B', "Bravo", 0.6);
+        lane3Horse = new Horse('C', "Charlie", 0.5);
     }
 
     /**
