@@ -15,18 +15,42 @@ public class Race {
 
     /**
      * Constructor for objects of class Race
+     * Checks if the distance is valid (greater than 0)
+     * If not, sets the distance to a default of 10
      * Initially there are no horses in the lanes
      * 
      * @param distance the length of the racetrack (in metres/yards...)
      */
     public Race(int distance) {
-        // initialise instance variables
-        raceLength = distance;
+        if (distance <= 0) {
+            System.out.println("Distance must be greater than 0. Setting to default of 10");
+            raceLength = 10;
+        }
+        else {
+            raceLength = distance;
+        }
+        initialiseHorses(); //initialise the horses to null
+    }
+    
+    /** 
+     * Constructor for Race class which takes no params
+     * Sets distance to a default value of 10
+     */ 
+    public Race() {
+        System.out.println("No distance given, setting to default of 10");
+        raceLength = 10;
+        initialiseHorses(); //initialise the horses to null
+    }
+
+    /**
+     * Initialise the horses to null
+     */
+    private void initialiseHorses() {
         lane1Horse = null;
         lane2Horse = null;
         lane3Horse = null;
     }
-    
+
     /**
      * Adds a horse to the race in a given lane
      * 
