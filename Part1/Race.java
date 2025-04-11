@@ -244,7 +244,10 @@ public class Race {
         multiplePrint(' ',spacesAfter);
         
         //print the | for the end of the track
-        System.out.print('|');
+        System.out.print('|');  
+        
+        //print horse's name and confidence rating
+        System.out.print(" " + theHorse.getName().toUpperCase() + " (Current confidence " + theHorse.getConfidence() + ")");
     }
         
     
