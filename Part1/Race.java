@@ -234,6 +234,7 @@ public class Race {
         //else print the horse's symbol
         if(theHorse.hasFallen()) {
             System.out.print('\u2620'); //skull and crossbones
+            spacesAfter--;
         }
         else {
             System.out.print(theHorse.getSymbol());
