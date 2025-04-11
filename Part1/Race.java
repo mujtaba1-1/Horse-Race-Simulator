@@ -148,6 +148,7 @@ public class Race {
             //so if you double the confidence, the probability that it will fall is *2
             if (Math.random() < (0.1*theHorse.getConfidence()*theHorse.getConfidence())) {
                 theHorse.fall();
+                theHorse.setConfidence(theHorse.getConfidence() - 0.1);
             }
         }
     }
@@ -162,7 +163,9 @@ public class Race {
     private boolean raceWonBy(Horse theHorse) {
         if (theHorse.getDistanceTravelled() == raceLength) {
             //if the horse has won, print a message to the terminal
-            System.out.println(theHorse.getName() + " has won the race!");
+            theHorse.setConfidence(theHorse.getConfidence() + 0.1);
+            System.out.printf("%s has won the race! (Confidence: %.1f)\n", theHorse.getName(), theHorse.getConfidence());
+
             return true;
         }
         else {
@@ -247,7 +250,8 @@ public class Race {
         System.out.print('|');  
         
         //print horse's name and confidence rating
-        System.out.print(" " + theHorse.getName().toUpperCase() + " (Current confidence " + theHorse.getConfidence() + ")");
+        System.out.printf(" %s (Current confidence %.1f)", theHorse.getName().toUpperCase(), theHorse.getConfidence());
+
     }
         
     
