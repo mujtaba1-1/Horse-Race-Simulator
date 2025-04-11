@@ -37,10 +37,10 @@ public class Horse {
      */
     private double validateConfidence(double confidence) {
         if (confidence >= 1.0) {
-            return 0.99;
+            return 0.9;
         }
         else if (confidence <= 0.0) {
-            return 0.01;
+            return 0.1;
         }
         return confidence;
     }
