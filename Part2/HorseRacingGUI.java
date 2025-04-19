@@ -1,10 +1,20 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.*;
 
 public class HorseRacingGUI extends JFrame {
 
-    JButton button;
-    JTextArea raceOutput;
-    Race race;
+    // Track Variables
+    private int laneCount;
+    private int trackLength;
+    private String trackShape;
+    private String weather;
+    private TrackCustomisation tc;
+
+    // Race
+    private Race race;
+    private ArrayList<Tile> track;
 
     HorseRacingGUI() {
         setTitle("Horse Racing Simulator");
@@ -13,10 +23,33 @@ public class HorseRacingGUI extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        TrackCustomisation tc = new TrackCustomisation();
-        add(tc);
+        displayTrackCustomisation();
 
         setVisible(true);
+    }
+
+    private void displayTrackCustomisation() {
+        tc = new TrackCustomisation();
+        add(tc);
+
+        JButton applyButton = tc.getApplyButton();
+        applyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                laneCount = tc.getLaneCount();
+                trackLength = tc.getTrackLength();
+                trackShape = tc.getSelectedShape();
+                weather = tc.getSelectedWeather();
+
+                System.out.println("Lane Count: " + laneCount);
+                System.out.println("Track Length: " + trackLength);
+                System.out.println("Track Shape: " + trackShape);
+                System.out.println("Weather: " + weather);
+
+                race = new Race(laneCount, trackLength, trackShape, weather); 
+            }
+        });
     }
 
 }
