@@ -4,9 +4,9 @@ import javax.swing.JLabel;
 
 public class Tile extends JLabel {
 
-    public int x_pos;
-    public int y_pos;
-    public boolean horseLane;
+    private int x_pos;
+    private int y_pos;
+    private boolean horseLane;
 
     public Tile(int x, int y, int size, boolean horseLane) {
         x_pos = x;
