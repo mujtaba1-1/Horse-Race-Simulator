@@ -1,4 +1,8 @@
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import javax.swing.*;
@@ -8,7 +12,7 @@ import javax.swing.*;
  * for a given distance
  * 
  * @author Muhammad Mujtaba Butt
- * @version 5.0
+ * @version 6.0
  */
 public class Race extends JFrame {
     
@@ -17,30 +21,67 @@ public class Race extends JFrame {
     private String trackShape;
     private String weather;
 
-    private JTextArea outputArea;
-    private int raceLength = 10;
-
     private ArrayList<ArrayList<Tile>> track = new ArrayList<>();
-    private final int TILEWIDTH = 30;
     private JPanel trackPanel;
 
     private Horse lane1Horse;
     private Horse lane2Horse;
     private Horse lane3Horse;
 
-    public Race(int laneCount, int trackLength, String trackShape, String weather) {
+    private final int TILEWIDTH;
+    private final int GRID_WIDTH = 1400;
+    private final int GRID_HEIGHT = 1000;   
+
+    private boolean isStraight = false;
+    private boolean isCurved = false;
+
+    private JFrame finishedFrame;
+
+    public Race(int laneCount, int trackLength, String trackShape, String weather, JButton applyButton) {
         // Initialise instance variables
         this.laneCount = laneCount + (laneCount - 1);
         this.trackLength = trackLength;
-        this.trackShape = trackShape;
         this.weather = weather;
+        this.trackShape = trackShape;
         initialiseHorses();
 
-        // Create Horse Frame
+        // Create Race Frame
         setTitle("Horse Race");
-        setSize(1000, 800);
+        setSize(GRID_WIDTH, GRID_HEIGHT);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
+        setBackground(Color.DARK_GRAY);
+
+        // Create Winning Frame
+        finishedFrame = new JFrame("Winner");
+        finishedFrame.setLayout(new FlowLayout(FlowLayout.CENTER));
+        finishedFrame.setSize(300, 100);
+        finishedFrame.setLocationRelativeTo(null);
+        finishedFrame.setResizable(false);
+
+
+        // Window listener to close both the race frame and finished frame
+        finishedFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dispose();
+                applyButton.setEnabled(true);
+            }
+        });
+
+        // Generate Track
+        switch (trackShape) {
+            case "Straight" -> {
+                TILEWIDTH = 50;
+                InitialiseStraightTrack();
+            }
+            case "Oval" -> {
+                TILEWIDTH = 20;
+                InitialiseOvalTrack();
+            }
+            default -> throw new AssertionError();
+        }
 
         // Create race panel
         trackPanel = new JPanel();
@@ -49,19 +90,12 @@ public class Race extends JFrame {
 
         JScrollPane scrollPane = new JScrollPane(trackPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        // Generate Track
-        switch (trackShape) {
-            case "Straight":
-                InitialiseStraightTrack();
-                break;
-            default:
-                throw new AssertionError();
-        }
+        
         add(scrollPane);
         setVisible(true);
-        startRace();
+        generateTrack();
     }
 
     private void InitialiseStraightTrack() {
@@ -81,7 +115,48 @@ public class Race extends JFrame {
         } 
     }
 
-    public void generateTrack() {
+    private void InitialiseOvalTrack() {
+        int centerX = GRID_WIDTH / 2;
+        int centerY = GRID_HEIGHT / 2;
+
+        int a = trackLength * 8;
+        int b = trackLength * 3;
+
+        for (int i = 0; i < laneCount; i++) {
+            track.add(new ArrayList<>());
+        }
+
+        // Step through angles from 0 to 360 degrees in small increments
+        for (double angle = 0; angle < 2 * Math.PI; angle += 0.01) {
+            for (int laneIndex = 0; laneIndex < laneCount; laneIndex++) {
+                int innerA = a + TILEWIDTH * laneIndex + TILEWIDTH / 2;
+                int innerB = b + TILEWIDTH * laneIndex + TILEWIDTH / 2;
+
+                double xCenter = centerX + innerA * Math.cos(angle);
+                double yCenter = centerY + innerB * Math.sin(angle);
+
+                int x = (int)(xCenter / TILEWIDTH) * TILEWIDTH;
+                int y = (int)(yCenter / TILEWIDTH) * TILEWIDTH;
+
+                // Check if the tile already exists in this lane to avoid duplicates
+                ArrayList<Tile> lane = track.get(laneIndex);
+                boolean exists = false;
+                for (Tile t : lane) {
+                    if (t.getX() == x && t.getY() == y) {
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (!exists) {
+                    Tile tile = new Tile(x, y, TILEWIDTH, laneIndex % 2 == 0);
+                    lane.add(tile);
+                }
+            }
+        }
+    }
+
+    private void generateTrack() {
         trackPanel.removeAll();
         for (ArrayList<Tile> lane : track) {
             for (Tile tile : lane) {
@@ -96,9 +171,9 @@ public class Race extends JFrame {
      * Initialise the horses to default horses
      */
     private void initialiseHorses() {
-        lane1Horse = new Horse('A', "Alpha", 0.8);
-        lane2Horse = new Horse('B', "Bravo", 0.6);
-        lane3Horse = new Horse('C', "Charlie", 0.5);
+        lane1Horse = new Horse('A', "Alpha", 0.5, 0);
+        lane2Horse = new Horse('B', "Bravo", 0.5, 2);
+        lane3Horse = new Horse('C', "Charlie", 0.5, 4);
     }
 
     /**
@@ -174,7 +249,8 @@ public class Race extends JFrame {
     private boolean allHorsesFallen() {
         boolean allFallen = lane1Horse.hasFallen() && lane2Horse.hasFallen() && lane3Horse.hasFallen();
         if (allFallen) {
-            System.out.println("All horses have fallen. No winner!");
+            finishedFrame.add(new JLabel("All horses have fallen. No winner!"));
+            finishedFrame.setVisible(true);
         }
         return allFallen;
     }
@@ -187,18 +263,31 @@ public class Race extends JFrame {
      * @param theHorse the horse to be moved
      */
     private void moveHorse(Horse theHorse) {
+
+        double confidenceModifier = calculateModifier(theHorse);
+        theHorse.setConfidence(theHorse.getConfidence() + confidenceModifier);
+
         //if the horse has fallen it cannot move, 
         //so only run if it has not fallen
         if  (!theHorse.hasFallen()) {
             //the probability that the horse will move forward depends on the confidence;
-            if (Math.random() < theHorse.getConfidence()) {
-               theHorse.moveForward();
+            if (trackShape.equals("Oval")) {
+                double moveChance = theHorse.getConfidence() * (1.0 + (theHorse.getLaneIndex() * 0.1));
+
+                if (Math.random() < moveChance) {
+                    theHorse.moveForward();
+                }
+            }
+            else {
+                if (Math.random() < theHorse.getConfidence()) {
+                    theHorse.moveForward();
+                }
             }
             
             //the probability that the horse will fall is very small (max is 0.1)
             //but will also will depends exponentially on confidence 
             //so if you double the confidence, the probability that it will fall is *2
-            if (Math.random() < (0.1*theHorse.getConfidence()*theHorse.getConfidence())) {
+            if (Math.random() < Math.min(0.005 + 0.01 * theHorse.getConfidence(), 0.015)) {
                 theHorse.fall();
                 theHorse.setSymbol('\u2620');
                 theHorse.setConfidence(theHorse.getConfidence() - 0.1);
@@ -206,6 +295,29 @@ public class Race extends JFrame {
         }
     }
         
+    private double calculateModifier(Horse theHorse) {
+        double modifier = 0.0;
+        ArrayList<Tile> lane = track.get(theHorse.getLaneIndex());
+        int distance = theHorse.getDistanceTravelled();
+        
+        Tile currentTile = lane.get(distance);
+        Tile nextTile = distance + 1 < lane.size() ? lane.get(distance + 1) : null;
+
+        if (nextTile != null && !theHorse.hasFallen()) {
+            if (nextTile.getY() == currentTile.getY()) {
+                modifier += theHorse.getConfidence() * 0.01;
+
+            }
+            else {
+                modifier -= theHorse.getConfidence() * 0.02;
+                isCurved = true;
+
+            }
+        }
+
+        return modifier;
+    }
+
     /** 
      * Determines if a horse has won the race
      * If they have won, print a winning message to the terminal
@@ -214,11 +326,12 @@ public class Race extends JFrame {
      * @return true if the horse has won, false otherwise.
      */
     private boolean raceWonBy(Horse theHorse) {
-        if (theHorse.getDistanceTravelled() == trackLength) {
+        if (theHorse.getDistanceTravelled() == track.get(theHorse.getLaneIndex()).size()) {
             //if the horse has won, print a message to the terminal
             theHorse.setConfidence(theHorse.getConfidence() + 0.1);
-            System.out.printf("%s has won the race! (Confidence: %.1f)\n", theHorse.getName(), theHorse.getConfidence());
-
+            String winningMessage = String.format("%s has won the race! (Confidence: %.2f)\n", theHorse.getName(), theHorse.getConfidence());
+            finishedFrame.add(new JLabel(winningMessage));
+            finishedFrame.setVisible(true);
             return true;
         }
         else {
@@ -227,20 +340,22 @@ public class Race extends JFrame {
     }
     
     /***
-     * Print the race on the terminal
+     * Print the race
      */
     private void printRace() {
-        displayHorse(lane1Horse, 0);
-        displayHorse(lane2Horse, 2);
-        displayHorse(lane3Horse, 4);
+        displayHorse(lane1Horse);
+        System.out.println("Confidence at " + lane1Horse.getDistanceTravelled() + ": " + lane1Horse.getConfidence());
+        displayHorse(lane2Horse);
+        displayHorse(lane3Horse);
         generateTrack();
     }
 
-    private void displayHorse(Horse horse, int laneIndex) {
+    private void displayHorse(Horse horse) {
+        int laneIndex = horse.getLaneIndex();
         int distance = horse.getDistanceTravelled();
-        distance = Math.min(distance, trackLength - 1);
-
         ArrayList<Tile> lane = track.get(laneIndex);
+
+        distance = Math.min(distance, lane.size() - 1);
 
         if (distance != 0) {
             lane.get(distance - 1).setSymbol(' ');
