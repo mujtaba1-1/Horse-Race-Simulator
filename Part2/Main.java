@@ -6,8 +6,11 @@ class Main {
         PrintStream printStream = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         System.setOut(printStream);
 
-        Race race = new Race(10);
+        //Race race = new Race(10);
 
-        race.startRace();
+        //race.startRace();
+
+        HorseRacingGUI gui = new HorseRacingGUI();
+
     }
 }
