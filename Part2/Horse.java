@@ -7,7 +7,7 @@
  * to get and set the horse's attributes.
  * 
  * @author Muhammad Mujtaba Butt
- * @version 2.0
+ * @version 3.0
  */
 public class Horse {
     //Fields of class Horse
@@ -16,17 +16,20 @@ public class Horse {
     private int distanceTravelled;
     private boolean hasFallen;
     private double confidence;
+    private int laneIndex;
+
       
     //Constructor of class Horse
     /**
      * Constructor for objects of class Horse
      */
-    public Horse(char horseSymbol, String horseName, double horseConfidence) {
+    public Horse(char horseSymbol, String horseName, double horseConfidence, int lane) {
        name = horseName;
        symbol = horseSymbol;
        confidence = validateConfidence(horseConfidence);
        distanceTravelled = 0;
        hasFallen = false;
+       laneIndex = lane;
     }
     
     //Private methods
@@ -54,6 +57,10 @@ public class Horse {
         return confidence;
     }
     
+    public int getLaneIndex() {
+        return laneIndex;
+    }
+
     public int getDistanceTravelled() {
         return distanceTravelled;
     }
