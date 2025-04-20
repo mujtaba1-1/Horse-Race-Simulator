@@ -4,6 +4,7 @@ import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.swing.*;
 
@@ -12,7 +13,7 @@ import javax.swing.*;
  * for a given distance
  * 
  * @author Muhammad Mujtaba Butt
- * @version 6.0
+ * @version 7.0
  */
 public class Race extends JFrame {
     
@@ -20,6 +21,12 @@ public class Race extends JFrame {
     private int trackLength;
     private String trackShape;
     private String weather;
+
+    private Map<String, Color> weatherColor = Map.of(
+        "Clear", Color.decode("#7CFC00"),
+        "Muddy", Color.decode("#70543E"),
+        "Icy", Color.decode("#86D6D8")
+    );
 
     private ArrayList<ArrayList<Tile>> track = new ArrayList<>();
     private JPanel trackPanel;
@@ -29,8 +36,8 @@ public class Race extends JFrame {
     private Horse lane3Horse;
 
     private final int TILEWIDTH;
-    private final int GRID_WIDTH = 1400;
-    private final int GRID_HEIGHT = 1000;   
+    private final int GRID_WIDTH = 800;
+    private final int GRID_HEIGHT = 600;   
 
     private JFrame finishedFrame;
 
@@ -48,7 +55,6 @@ public class Race extends JFrame {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-        setBackground(Color.DARK_GRAY);
 
         // Create Winning Frame
         finishedFrame = new JFrame("Winner");
@@ -70,7 +76,7 @@ public class Race extends JFrame {
         // Generate Track
         switch (trackShape) {
             case "Straight" -> {
-                TILEWIDTH = 50;
+                TILEWIDTH = 40;
                 InitialiseStraightTrack();
             }
             case "Oval" -> {
@@ -83,6 +89,7 @@ public class Race extends JFrame {
         // Create race panel
         trackPanel = new JPanel();
         trackPanel.setLayout(null);
+        trackPanel.setBackground(weatherColor.get(weather));
         trackPanel.setPreferredSize(new Dimension(trackLength * TILEWIDTH, laneCount * TILEWIDTH));
 
         JScrollPane scrollPane = new JScrollPane(trackPanel);
@@ -97,7 +104,7 @@ public class Race extends JFrame {
 
     private void InitialiseStraightTrack() {
         int x = 0;
-        int startingHeight = 400 - ((TILEWIDTH * laneCount) / 2);
+        int startingHeight = GRID_HEIGHT / 2 - ((TILEWIDTH * laneCount) / 2);
         
         for (int i = 0; i < laneCount; i++) {
             ArrayList<Tile> lane = new ArrayList<>();
@@ -169,8 +176,11 @@ public class Race extends JFrame {
      */
     private void initialiseHorses() {
         lane1Horse = new Horse('A', "Alpha", 0.5, 0);
+        weatherEffect(lane1Horse);
         lane2Horse = new Horse('B', "Bravo", 0.5, 2);
+        weatherEffect(lane2Horse);
         lane3Horse = new Horse('C', "Charlie", 0.5, 4);
+        weatherEffect(lane3Horse);
     }
 
     /**
@@ -262,7 +272,7 @@ public class Race extends JFrame {
     private void moveHorse(Horse theHorse) {
 
         double confidenceModifier = calculateModifier(theHorse);
-        theHorse.setConfidence(theHorse.getConfidence() + confidenceModifier);
+
 
         //if the horse has fallen it cannot move, 
         //so only run if it has not fallen
@@ -273,21 +283,29 @@ public class Race extends JFrame {
 
                 if (Math.random() < moveChance) {
                     theHorse.moveForward();
+                    theHorse.setConfidence(theHorse.getConfidence() + confidenceModifier);
                 }
             }
             else {
                 if (Math.random() < theHorse.getConfidence()) {
                     theHorse.moveForward();
+                    theHorse.setConfidence(theHorse.getConfidence() + confidenceModifier);
                 }
             }
             
-            //the probability that the horse will fall is very small (max is 0.1)
-            //but will also will depends exponentially on confidence 
-            //so if you double the confidence, the probability that it will fall is *2
-            if (Math.random() < Math.min(0.005 + 0.01 * theHorse.getConfidence(), 0.015)) {
-                theHorse.fall();
-                theHorse.setSymbol('\u2620');
-                theHorse.setConfidence(theHorse.getConfidence() - 0.1);
+            if (weather.equals("Icy") || weather.equals("Muddy")) {
+                if (Math.random() < (0.1*theHorse.getConfidence()*theHorse.getConfidence())) {
+                    theHorse.fall();
+                    theHorse.setSymbol('\u2620');
+                    theHorse.setConfidence(theHorse.getConfidence() - 0.1);
+                }
+            }
+            else {
+                if (Math.random() < (0.05*theHorse.getConfidence()*theHorse.getConfidence())) {
+                    theHorse.fall();
+                    theHorse.setSymbol('\u2620');
+                    theHorse.setConfidence(theHorse.getConfidence() - 0.1);
+                }
             }
         }
     }
@@ -302,14 +320,23 @@ public class Race extends JFrame {
 
         if (nextTile != null && !theHorse.hasFallen()) {
             if (nextTile.getY() == currentTile.getY()) {
-                modifier += theHorse.getConfidence() * 0.01;
+                modifier += theHorse.getConfidence() * 0.02;
             }
             else {
-                modifier -= theHorse.getConfidence() * 0.02;
+                modifier -= 0.01;
             }
         }
 
         return modifier;
+    }
+
+    private void weatherEffect(Horse theHorse) {
+        theHorse.setConfidence(theHorse.getConfidence() + switch (weather) {
+            case "Clear" -> 0.1;
+            case "Muddy" -> -0.1;
+            case "Icy" -> -0.2;
+            default -> 0.0;
+        });
     }
 
     /** 
