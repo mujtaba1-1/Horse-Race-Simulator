@@ -48,20 +48,20 @@ public class TrackCustomisation extends JPanel {
         // Track Customisation
         customisationPanel.add(createLabel("Number of Lanes:", 75, 50));
 
-        laneSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
+        laneSpinner = new JSpinner(new SpinnerNumberModel(3, 3, 5, 1));
         laneSpinner.setBounds(375, 50, 100, 25);
         customisationPanel.add(laneSpinner);
 
         customisationPanel.add(createLabel("Track Length:", 75, 125));
 
-        lengthSpinner = new JSpinner(new SpinnerNumberModel(15, 5, 50, 1));
+        lengthSpinner = new JSpinner(new SpinnerNumberModel(10, 10, 50, 5));
         lengthSpinner.setBounds(375, 125, 100, 25);
         customisationPanel.add(lengthSpinner);
 
         // Track Shape
         customisationPanel.add(createLabel("Track Shape:", 75, 200));
 
-        String[] shapes = {"Oval", "Figure-Eight", "Custom"};
+        String[] shapes = {"Straight", "Oval", "Custom"};
         shapeSelector = new JComboBox<>(shapes);
         shapeSelector.setBounds(350, 200, 150, 25);
         customisationPanel.add(shapeSelector);
