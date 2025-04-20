@@ -36,7 +36,7 @@ public class HorseRacingGUI extends JFrame {
         applyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                applyButton.setEnabled(false);
                 laneCount = tc.getLaneCount();
                 trackLength = tc.getTrackLength();
                 trackShape = tc.getSelectedShape();
@@ -47,7 +47,8 @@ public class HorseRacingGUI extends JFrame {
                 System.out.println("Track Shape: " + trackShape);
                 System.out.println("Weather: " + weather);
 
-                race = new Race(laneCount, trackLength, trackShape, weather); 
+                race = new Race(laneCount, trackLength, trackShape, weather, applyButton); 
+                race.startRace();
             }
         });
     }
