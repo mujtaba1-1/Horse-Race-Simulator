@@ -32,9 +32,6 @@ public class Race extends JFrame {
     private final int GRID_WIDTH = 1400;
     private final int GRID_HEIGHT = 1000;   
 
-    private boolean isStraight = false;
-    private boolean isCurved = false;
-
     private JFrame finishedFrame;
 
     public Race(int laneCount, int trackLength, String trackShape, String weather, JButton applyButton) {
@@ -306,12 +303,9 @@ public class Race extends JFrame {
         if (nextTile != null && !theHorse.hasFallen()) {
             if (nextTile.getY() == currentTile.getY()) {
                 modifier += theHorse.getConfidence() * 0.01;
-
             }
             else {
                 modifier -= theHorse.getConfidence() * 0.02;
-                isCurved = true;
-
             }
         }
 
