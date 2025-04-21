@@ -1,10 +1,8 @@
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.swing.*;
 
@@ -22,13 +20,9 @@ public class Race extends JFrame {
     private String trackShape;
     private String weather;
 
-    private Map<String, Color> weatherColor = Map.of(
-        "Clear", Color.decode("#7CFC00"),
-        "Muddy", Color.decode("#70543E"),
-        "Icy", Color.decode("#86D6D8")
-    );
-
     private ArrayList<Horse> horses = new ArrayList<>();
+
+    private Track track;
 
     private JFrame finishedFrame;
 
@@ -46,6 +40,7 @@ public class Race extends JFrame {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
+        setLayout(new BorderLayout());
 
         // Create Winning Frame
         finishedFrame = new JFrame("Winner");
@@ -67,26 +62,15 @@ public class Race extends JFrame {
         // Generate Track
         switch (trackShape) {
             case "Straight" -> {
+                track = new StraightTrack(trackLength, laneCount, horses);
             }
             case "Oval" -> {
             }
             default -> throw new AssertionError();
         }
 
+        add(track);
         setVisible(true);
-        generateTrack();
-    }
-
-
-    private void generateTrack() {
-        trackPanel.removeAll();
-        for (ArrayList<Tile> lane : track) {
-            for (Tile tile : lane) {
-                trackPanel.add(tile);
-            }
-        }
-        trackPanel.repaint();
-        trackPanel.revalidate();
     }
 
     /**
@@ -104,21 +88,8 @@ public class Race extends JFrame {
      * @param theHorse the horse to be added to the race
      * @param laneNumber the lane that the horse will be added to
      */
-    public void addHorse(Horse theHorse, int laneNumber) {
-        switch (laneNumber) {
-            case 1:
-                lane1Horse = theHorse;
-                break;
-            case 2:
-                lane2Horse = theHorse;
-                break;
-            case 3:
-                lane3Horse = theHorse;
-                break;
-            default:
-                System.out.println("Cannot add horse to lane " + laneNumber + " because there is no such lane");
-                break;
-        }
+    public void addHorse(Horse theHorse) {
+        horses.add(theHorse);
     }
     
     /**
@@ -141,7 +112,7 @@ public class Race extends JFrame {
                 }
 
                 // Schedule GUI update on the Event Dispatch Thread
-                SwingUtilities.invokeLater(this::printRace);
+                SwingUtilities.invokeLater(() -> track.updateTrack());
 
                 if (raceWonBy() || allHorsesFallen()) { 
                     finished = true;
@@ -192,6 +163,7 @@ public class Race extends JFrame {
     private void moveHorse(Horse theHorse) {
         //if the horse has fallen it cannot move, 
         //so only run if it has not fallen
+        System.out.println(theHorse.getDistanceTravelled());
         if  (!theHorse.hasFallen()) {
             //the probability that the horse will move forward depends on the confidence;
             if (Math.random() < theHorse.getConfidence()) {
@@ -253,9 +225,6 @@ public class Race extends JFrame {
                 finishedFrame.add(new JLabel(winningMessage));
                 finishedFrame.setVisible(true);
                 return true;
-            }
-            else {
-                return false;
             }
         }
         return false;
