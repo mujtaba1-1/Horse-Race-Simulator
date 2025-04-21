@@ -9,27 +9,30 @@
  * @author Muhammad Mujtaba Butt
  * @version 3.0
  */
+
+import java.awt.Image;
+import javax.swing.ImageIcon;
+
 public class Horse {
     //Fields of class Horse
-    private String name;
+    private final String name;
     private char symbol;
     private int distanceTravelled;
     private boolean hasFallen;
     private double confidence;
-    private int laneIndex;
 
-      
+    private final Image horseImage = new ImageIcon("images/horse.png").getImage();
+
     //Constructor of class Horse
     /**
      * Constructor for objects of class Horse
      */
-    public Horse(char horseSymbol, String horseName, double horseConfidence, int lane) {
+    public Horse(char horseSymbol, String horseName, double horseConfidence) {
        name = horseName;
        symbol = horseSymbol;
        confidence = validateConfidence(horseConfidence);
        distanceTravelled = 0;
        hasFallen = false;
-       laneIndex = lane;
     }
     
     //Private methods
@@ -53,12 +56,12 @@ public class Horse {
         hasFallen = true;
     }
     
+    public Image getHorseImage() {
+        return horseImage;
+    }
+
     public double getConfidence() {
         return confidence;
-    }
-    
-    public int getLaneIndex() {
-        return laneIndex;
     }
 
     public int getDistanceTravelled() {
