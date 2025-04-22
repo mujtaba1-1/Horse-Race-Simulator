@@ -1,6 +1,4 @@
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import javax.swing.*;
 
 public class HorseRacingGUI extends JFrame {
@@ -14,7 +12,6 @@ public class HorseRacingGUI extends JFrame {
 
     // Race
     private Race race;
-    private ArrayList<Tile> track;
 
     HorseRacingGUI() {
         setTitle("Horse Racing Simulator");
@@ -33,23 +30,20 @@ public class HorseRacingGUI extends JFrame {
         add(tc);
 
         JButton applyButton = tc.getApplyButton();
-        applyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                applyButton.setEnabled(false);
-                laneCount = tc.getLaneCount();
-                trackLength = tc.getTrackLength();
-                trackShape = tc.getSelectedShape();
-                weather = tc.getSelectedWeather();
-
-                System.out.println("Lane Count: " + laneCount);
-                System.out.println("Track Length: " + trackLength);
-                System.out.println("Track Shape: " + trackShape);
-                System.out.println("Weather: " + weather);
-
-                race = new Race(laneCount, trackLength, trackShape, weather, applyButton); 
-                race.startRace();
-            }
+        applyButton.addActionListener((ActionEvent e) -> {
+            applyButton.setEnabled(false);
+            laneCount = tc.getLaneCount();
+            trackLength = tc.getTrackLength();
+            trackShape = tc.getSelectedShape();
+            weather = tc.getSelectedWeather();
+            
+            System.out.println("Lane Count: " + laneCount);
+            System.out.println("Track Length: " + trackLength);
+            System.out.println("Track Shape: " + trackShape);
+            System.out.println("Weather: " + weather);
+            
+            race = new Race(laneCount, trackLength, trackShape, weather, applyButton);
+            race.startRace();
         });
     }
 
