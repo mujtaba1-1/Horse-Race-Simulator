@@ -5,6 +5,10 @@ import java.util.ArrayList;
 
 class StraightTrack extends Track {
 
+    private final int verticalOffset = 15;
+    private final int horizontalOffset = 15;
+    private final int thickness = 3;
+
     public StraightTrack(int trackLength, int lanes, ArrayList<Horse> horses) {
         super(trackLength, lanes, horses);
     }
@@ -14,20 +18,12 @@ class StraightTrack extends Track {
         super.paintComponent(g);
         g.setColor(Color.BLACK);
 
-        int horseX;
-        int horseY;
-
-        int verticalOffset = 15;
-        int horizontalOffset = 15;
-
-        int thickness = 3;
-
         for (int i = 0; i < lanes; i++) {
             Horse horse = horses.get(i);
 
             Image horseImage = horse.getHorseImage();
-            int horseWidth = horseImage.getWidth(null);
-            int horseHeight = horseImage.getHeight(null);
+            int horseWidth = horse.getWidth();
+            int horseHeight = horse.getHeight();
 
             int lineHeight = horseHeight + 2 * verticalOffset;
 
@@ -35,8 +31,8 @@ class StraightTrack extends Track {
             g.fillRect(getWidth() - horseWidth - horizontalOffset, i * lineHeight, thickness, lineHeight);
             g.drawString("Lane " + (i + 1), getWidth() / 2, i * lineHeight + verticalOffset + horseHeight / 2);
 
-            horseX = horizontalOffset + (int) (((double) horse.getDistanceTravelled() / (double) trackLength) * (getWidth() - 2*(horseWidth + horizontalOffset) - thickness));
-            horseY = i * lineHeight + verticalOffset;
+            int horseX = horizontalOffset + (int) (((double) horse.getDistanceTravelled() / (double) trackLength) * (getWidth() - 2*(horseWidth + horizontalOffset) - thickness));
+            int horseY = i * lineHeight + verticalOffset;
 
             g.drawImage(horseImage, horseX, horseY, this);
         }
