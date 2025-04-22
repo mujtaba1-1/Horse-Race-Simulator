@@ -10,6 +10,8 @@ public class HorseRacingGUI extends JFrame {
     private String weather;
     private TrackCustomisation tc;
 
+    private HorseCustomisation hc;
+
     // Race
     private Race race;
 
@@ -20,31 +22,43 @@ public class HorseRacingGUI extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        displayTrackCustomisation();
-
-        setVisible(true);
-    }
-
-    private void displayTrackCustomisation() {
         tc = new TrackCustomisation();
         add(tc);
 
         JButton applyButton = tc.getApplyButton();
         applyButton.addActionListener((ActionEvent e) -> {
-            applyButton.setEnabled(false);
             laneCount = tc.getLaneCount();
             trackLength = tc.getTrackLength();
             trackShape = tc.getSelectedShape();
             weather = tc.getSelectedWeather();
-            
-            System.out.println("Lane Count: " + laneCount);
-            System.out.println("Track Length: " + trackLength);
-            System.out.println("Track Shape: " + trackShape);
-            System.out.println("Weather: " + weather);
-            
-            race = new Race(laneCount, trackLength, trackShape, weather, applyButton);
-            race.startRace();
-        });
-    }
 
+            hc = new HorseCustomisation(laneCount);  // Reinitialize the horse customisation panel
+
+            // Update the content pane
+            getContentPane().removeAll();
+            getContentPane().add(hc);
+
+            // Re-add back button listener after adding hc panel
+            JButton backButton = hc.getBackButton();
+            backButton.addActionListener((ActionEvent ev) -> {
+                // Switch back to track customisation
+                getContentPane().removeAll();
+                getContentPane().add(tc);
+                revalidate();
+                repaint();
+            });
+
+            JButton startButton = hc.getStartButton();
+            startButton.addActionListener((ActionEvent ev) -> {
+                hc.setInteractable(false);
+                Race race = new Race(laneCount, trackLength, trackShape, weather, hc.getHorses(), hc);
+                race.startRace();
+            });
+
+            revalidate();
+            repaint();
+        });
+
+        setVisible(true);
+    }
 }
