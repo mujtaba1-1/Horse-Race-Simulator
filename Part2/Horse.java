@@ -22,6 +22,7 @@ public class Horse {
     private double confidence;
 
     private final Image horseImage = new ImageIcon("images/horse.png").getImage();
+    private final Image fallenImage = new ImageIcon("images/skull.png").getImage();
 
     //Constructor of class Horse
     /**
@@ -57,7 +58,15 @@ public class Horse {
     }
     
     public Image getHorseImage() {
-        return horseImage;
+        return hasFallen() ? fallenImage : horseImage;
+    }
+
+    public int getHeight() {
+        return horseImage.getHeight(null);
+    }
+
+    public int getWidth() {
+        return horseImage.getWidth(null);
     }
 
     public double getConfidence() {
