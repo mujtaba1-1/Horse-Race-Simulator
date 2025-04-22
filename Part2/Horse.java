@@ -7,7 +7,7 @@
  * to get and set the horse's attributes.
  * 
  * @author Muhammad Mujtaba Butt
- * @version 3.0
+ * @version 4.0
  */
 
 import java.awt.Image;
@@ -16,24 +16,32 @@ import javax.swing.ImageIcon;
 public class Horse {
     //Fields of class Horse
     private final String name;
-    private char symbol;
     private int distanceTravelled;
     private boolean hasFallen;
     private double confidence;
 
-    private final Image horseImage = new ImageIcon("images/horse.png").getImage();
+    private String breed;
+    private String colour;
+    private String accessory;
+
+    private Image horseImage;
     private final Image fallenImage = new ImageIcon("images/skull.png").getImage();
 
     //Constructor of class Horse
     /**
      * Constructor for objects of class Horse
      */
-    public Horse(char horseSymbol, String horseName, double horseConfidence) {
+    public Horse(String horseName, double horseConfidence) {
        name = horseName;
-       symbol = horseSymbol;
        confidence = validateConfidence(horseConfidence);
        distanceTravelled = 0;
        hasFallen = false;
+
+       breed = "PLAIN";
+       colour = "ORIGINAL";
+       accessory = "NONE";
+
+       horseImage = new ImageIcon("images/" + breed + "-" + colour + ".png").getImage();
     }
     
     //Private methods
@@ -57,6 +65,36 @@ public class Horse {
         hasFallen = true;
     }
     
+    public void setBreed(String newBreed) {
+        breed = newBreed.toUpperCase();
+        setHorseImage();
+    }
+
+    public void setColour(String newColour) {
+        colour = newColour.toUpperCase();
+        setHorseImage();
+    }
+
+    public void setAccessory(String newAccessory) {
+        accessory = newAccessory;
+    }
+
+    public String getBreed() {
+        return breed;
+    }
+
+    public String getColour() {
+        return colour;
+    }
+
+    public String getAccessory() {
+        return accessory;
+    }
+
+    private void setHorseImage() {
+        horseImage = new ImageIcon("images/" + breed + "-" + colour + ".png").getImage();
+    }
+
     public Image getHorseImage() {
         return hasFallen() ? fallenImage : horseImage;
     }
@@ -70,7 +108,7 @@ public class Horse {
     }
 
     public double getConfidence() {
-        return confidence;
+        return accessory.equals("Saddle") ? validateConfidence(confidence + 0.08) : confidence;
     }
 
     public int getDistanceTravelled() {
@@ -81,12 +119,9 @@ public class Horse {
         return name;
     }
     
-    public char getSymbol() {
-        return symbol;
-    }
-    
     public void goBackToStart() {
         distanceTravelled = 0;
+        hasFallen = false;
     }
     
     public boolean hasFallen() {
@@ -99,10 +134,6 @@ public class Horse {
 
     public void setConfidence(double newConfidence) {
         confidence = validateConfidence(newConfidence);
-    }
-    
-    public void setSymbol(char newSymbol) {
-        symbol = newSymbol;
     }
     
 }
