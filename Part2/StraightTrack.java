@@ -24,7 +24,7 @@ class StraightTrack extends Track {
             Image horseImage = horse.getHorseImage();
             int horseWidth = horse.getWidth();
             int horseHeight = horse.getHeight();
-
+            
             int lineHeight = horseHeight + 2 * verticalOffset;
 
             g.fillRect(horseWidth + horizontalOffset, i * lineHeight, thickness, lineHeight);
