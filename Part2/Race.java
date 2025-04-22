@@ -14,28 +14,24 @@ import javax.swing.*;
  */
 public class Race extends JFrame {
     
-    private int laneCount;
     private int trackLength;
-    private String trackShape;
     private String weather;
 
-    private ArrayList<Horse> horses = new ArrayList<>();
+    private ArrayList<Horse> horses;
 
     private Track track;
 
     private JFrame finishedFrame;
 
-    public Race(int laneCount, int trackLength, String trackShape, String weather, JButton applyButton) {
+    public Race(int laneCount, int trackLength, String trackShape, String weather, ArrayList<Horse> horses, HorseCustomisation hc) {
         // Initialise instance variables
-        this.laneCount = laneCount + (laneCount - 1);
         this.trackLength = trackLength;
         this.weather = weather;
-        this.trackShape = trackShape;
-        initialiseHorses();
-
+        this.horses = horses;
+        
         // Create Race Frame
         setTitle("Horse Race");
-        setSize(800, 600);
+        setSize(800, 800);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -54,7 +50,7 @@ public class Race extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 dispose();
-                applyButton.setEnabled(true);
+                hc.setInteractable(true);
             }
         });
 
@@ -66,30 +62,13 @@ public class Race extends JFrame {
             case "Oval" -> {
                 track = new OvalTrack(trackLength, laneCount, horses);
             }
+            case "Star" -> {
+                track = new StarTrack(trackLength, laneCount, horses);
+            }
             default -> throw new AssertionError();
         }
-
         add(track);
         setVisible(true);
-    }
-
-    /**
-     * Initialise the horses to default horses
-     */
-    private void initialiseHorses() {
-        horses.add(new Horse('A', "Alpha", 0.5));
-        horses.add(new Horse('B', "Beta", 0.5));
-        horses.add(new Horse('C', "Charlie", 0.5));
-    }
-
-    /**
-     * Adds a horse to the race in a given lane
-     * 
-     * @param theHorse the horse to be added to the race
-     * @param laneNumber the lane that the horse will be added to
-     */
-    public void addHorse(Horse theHorse) {
-        horses.add(theHorse);
     }
     
     /**
@@ -116,6 +95,9 @@ public class Race extends JFrame {
 
                 if (raceWonBy() || allHorsesFallen()) { 
                     finished = true;
+                    for (Horse horse : horses) {
+                        horse.goBackToStart();
+                    }
                 }
 
                 try {
@@ -165,48 +147,39 @@ public class Race extends JFrame {
         //so only run if it has not fallen
         if  (!theHorse.hasFallen()) {
             //the probability that the horse will move forward depends on the confidence;
-            if (Math.random() < theHorse.getConfidence()) {
+
+            double moveChance = ("Bridle".equals(theHorse.getAccessory()) ? 0.08 : 0) + theHorse.getConfidence();
+            if (moveChance > 1) {
+                moveChance = 1.0;
+            }
+
+            if (Math.random() < moveChance) {
                theHorse.moveForward();
             }
             
             //the probability that the horse will fall is very small (max is 0.1)
             //but will also will depends exponentially on confidence 
             //so if you double the confidence, the probability that it will fall is *2
-            if (Math.random() < (0.1*theHorse.getConfidence()*theHorse.getConfidence())) {
+
+            double weatherEffect = weatherEffect(theHorse);
+
+            double fallChance = (("Shoe".equals(theHorse.getAccessory()) ? 0.2 : 0.1) * (theHorse.getConfidence() + weatherEffect) * (theHorse.getConfidence() + weatherEffect));
+            System.out.println("Fall chance: " + fallChance);
+
+            if (Math.random() < fallChance) {
                 theHorse.fall();
                 theHorse.setConfidence(theHorse.getConfidence() - 0.1);
             }
         }
     }
 
-    /*   
-    private double calculateModifier(Horse theHorse) {
-        double modifier = 0.0;
-        int distance = theHorse.getDistanceTravelled();
-        
-        Tile currentTile = lane.get(distance);
-        Tile nextTile = distance + 1 < lane.size() ? lane.get(distance + 1) : null;
-
-        if (nextTile != null && !theHorse.hasFallen()) {
-            if (nextTile.getY() == currentTile.getY()) {
-                modifier += theHorse.getConfidence() * 0.02;
-            }
-            else {
-                modifier -= 0.01;
-            }
-        }
-
-        return modifier;
-    }
-    */
-
-    private void weatherEffect(Horse theHorse) {
-        theHorse.setConfidence(theHorse.getConfidence() + switch (weather) {
-            case "Clear" -> 0.1;
-            case "Muddy" -> -0.1;
-            case "Icy" -> -0.2;
-            default -> 0.0;
-        });
+    private double weatherEffect(Horse horse) {
+            return switch (weather) {
+                case "Clear" -> -0.05;
+                case "Muddy" -> +0.05;
+                case "Icy" -> +0.1;
+                default -> 0.0;
+            };
     }
 
     /** 
@@ -219,7 +192,7 @@ public class Race extends JFrame {
     private boolean raceWonBy() {
         for (Horse horse : horses) {
             if (horse.getDistanceTravelled() == trackLength) {
-                horse.setConfidence(horse.getConfidence() + 0.1);
+                horse.setConfidence(horse.getConfidence() + 0.15);
                 String winningMessage = String.format("%s has won the race! (Confidence: %.2f)\n", horse.getName(), horse.getConfidence());
                 finishedFrame.add(new JLabel(winningMessage));
                 finishedFrame.setVisible(true);
