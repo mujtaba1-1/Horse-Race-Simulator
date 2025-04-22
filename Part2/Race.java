@@ -3,7 +3,6 @@ import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 import javax.swing.*;
 
 /**
@@ -65,6 +64,7 @@ public class Race extends JFrame {
                 track = new StraightTrack(trackLength, laneCount, horses);
             }
             case "Oval" -> {
+                track = new OvalTrack(trackLength, laneCount, horses);
             }
             default -> throw new AssertionError();
         }
@@ -119,7 +119,7 @@ public class Race extends JFrame {
                 }
 
                 try {
-                    TimeUnit.MILLISECONDS.sleep(100); // Sleep in the background thread
+                    Thread.sleep(100); // Sleep in the background thread
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -163,7 +163,6 @@ public class Race extends JFrame {
     private void moveHorse(Horse theHorse) {
         //if the horse has fallen it cannot move, 
         //so only run if it has not fallen
-        System.out.println(theHorse.getDistanceTravelled());
         if  (!theHorse.hasFallen()) {
             //the probability that the horse will move forward depends on the confidence;
             if (Math.random() < theHorse.getConfidence()) {
