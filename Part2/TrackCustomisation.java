@@ -1,7 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
 
-public class TrackCustomisation extends JPanel {
+class TrackCustomisation extends JPanel {
     private JSpinner laneSpinner;
     private JSpinner lengthSpinner;
     private JComboBox<String> shapeSelector;
@@ -48,20 +48,20 @@ public class TrackCustomisation extends JPanel {
         // Track Customisation
         customisationPanel.add(createLabel("Number of Lanes:", 75, 50));
 
-        laneSpinner = new JSpinner(new SpinnerNumberModel(3, 3, 5, 1));
+        laneSpinner = new JSpinner(new SpinnerNumberModel(2, 2, 5, 1));
         laneSpinner.setBounds(375, 50, 100, 25);
         customisationPanel.add(laneSpinner);
 
         customisationPanel.add(createLabel("Track Length:", 75, 125));
 
-        lengthSpinner = new JSpinner(new SpinnerNumberModel(10, 10, 50, 5));
+        lengthSpinner = new JSpinner(new SpinnerNumberModel(10, 10, 30, 5));
         lengthSpinner.setBounds(375, 125, 100, 25);
         customisationPanel.add(lengthSpinner);
 
         // Track Shape
         customisationPanel.add(createLabel("Track Shape:", 75, 200));
 
-        String[] shapes = {"Straight", "Oval", "Custom"};
+        String[] shapes = {"Straight", "Oval", "Star"};
         shapeSelector = new JComboBox<>(shapes);
         shapeSelector.setBounds(350, 200, 150, 25);
         customisationPanel.add(shapeSelector);
