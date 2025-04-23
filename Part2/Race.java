@@ -162,9 +162,7 @@ public class Race extends JFrame {
             //so if you double the confidence, the probability that it will fall is *2
 
             double weatherEffect = weatherEffect(theHorse);
-
             double fallChance = (("Shoe".equals(theHorse.getAccessory()) ? 0.2 : 0.1) * (theHorse.getConfidence() + weatherEffect) * (theHorse.getConfidence() + weatherEffect));
-            System.out.println("Fall chance: " + fallChance);
 
             if (Math.random() < fallChance) {
                 theHorse.fall();

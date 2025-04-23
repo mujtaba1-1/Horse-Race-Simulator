@@ -1,4 +1,5 @@
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import javax.swing.*;
 
 public class HorseRacingGUI extends JFrame {
@@ -10,7 +11,11 @@ public class HorseRacingGUI extends JFrame {
     private String weather;
     private TrackCustomisation tc;
 
+    private final int MAX_LANES = 5;
+
     private HorseCustomisation hc;
+    private ArrayList<Horse> horses = new ArrayList<>();
+    private String[] horseNames = {"Alpha", "Bravo", "Charlie", "Delta", "Echo"};
 
     // Race
     private Race race;
@@ -22,6 +27,8 @@ public class HorseRacingGUI extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
+        initialiseHorses(MAX_LANES);
+
         tc = new TrackCustomisation();
         add(tc);
 
@@ -32,7 +39,7 @@ public class HorseRacingGUI extends JFrame {
             trackShape = tc.getSelectedShape();
             weather = tc.getSelectedWeather();
 
-            hc = new HorseCustomisation(laneCount);  // Reinitialize the horse customisation panel
+            hc = new HorseCustomisation(laneCount, horses);  // Reinitialize the horse customisation panel
 
             // Update the content pane
             getContentPane().removeAll();
@@ -51,7 +58,7 @@ public class HorseRacingGUI extends JFrame {
             JButton startButton = hc.getStartButton();
             startButton.addActionListener((ActionEvent ev) -> {
                 hc.setInteractable(false);
-                Race race = new Race(laneCount, trackLength, trackShape, weather, hc.getHorses(), hc);
+                Race race = new Race(laneCount, trackLength, trackShape, weather, horses, hc);
                 race.startRace();
             });
 
@@ -60,5 +67,11 @@ public class HorseRacingGUI extends JFrame {
         });
 
         setVisible(true);
+    }
+
+    private void initialiseHorses(int laneCount) {
+        for (int i = 0; i < laneCount; i++) {
+            horses.add(new Horse(horseNames[i], 0.5));
+        }
     }
 }

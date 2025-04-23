@@ -5,21 +5,15 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 class HorseCustomisation extends JPanel {
-
-    private String[] horseNames = {"Alpha", "Bravo", "Charlie", "Delta", "Echo"};
-    private ArrayList<Horse> horses = new ArrayList<>();
-    
+   
     private JButton backButton;
     private JButton startButton;
 
     private boolean isInteractable = true;
 
-    public HorseCustomisation(int laneCount) {
+    public HorseCustomisation(int laneCount, ArrayList<Horse> horses) {
         setPreferredSize(new Dimension(1000, 800));
         setLayout(new BorderLayout());
-
-        // Initalise Horses
-        initialiseHorses(laneCount);
 
         // Heading
         JPanel headingPanel = new JPanel();
@@ -47,8 +41,10 @@ class HorseCustomisation extends JPanel {
 
 
         for (int i = 0; i < laneCount; i++) {
-            final int index = i;
-            JLabel label = new JLabel(horseNames[i]);
+            
+            Horse horse = horses.get(i);
+
+            JLabel label = new JLabel(horse.getName());
             label.setFont(new Font("Poppins", Font.PLAIN, 16));
             label.setHorizontalAlignment(JLabel.CENTER);
             label.setBorder(BorderFactory.createCompoundBorder(
@@ -62,8 +58,6 @@ class HorseCustomisation extends JPanel {
                     if (!isInteractable) return;
 
                     customisationPanel.removeAll();
-
-                    Horse horse = horses.get(index);
 
                     // Display Horse Name
                     JLabel nameLabel = new JLabel("Horse Name: " + horse.getName());
@@ -125,10 +119,6 @@ class HorseCustomisation extends JPanel {
                         double newConfidence = horse.getConfidence();
                         confidenceLabel.setText(String.format("Confidence: %.2f", newConfidence));
 
-                        System.out.println(horse.getName());
-                        System.out.println("Breed: " + horse.getBreed());
-                        System.out.println("Color: " + horse.getColour());
-                        System.out.println("Accessory: " + horse.getAccessory());
                         
                         JOptionPane.showMessageDialog(customisationPanel, "Changes applied to " + horse.getName() + "!");
 
@@ -166,22 +156,12 @@ class HorseCustomisation extends JPanel {
         add(footerPanel, BorderLayout.SOUTH);
     }
 
-    private void initialiseHorses(int laneCount) {
-        for (int i = 0; i < laneCount; i++) {
-            horses.add(new Horse(horseNames[i], 0.5));
-        }
-    }
-
     public JButton getBackButton() {
         return backButton;
     }
 
     public JButton getStartButton() {
         return startButton;
-    }
-
-    public ArrayList<Horse> getHorses() {
-        return horses;
     }
 
     public void setInteractable(boolean interactable) {
