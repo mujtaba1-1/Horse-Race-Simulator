@@ -24,6 +24,10 @@ public class Horse {
     private String colour;
     private String accessory;
 
+    private double finishTime;
+    private int totalRaces;
+    private int totalWins;
+
     private Image horseImage;
     private final Image fallenImage = new ImageIcon("images/skull.png").getImage();
 
@@ -40,6 +44,10 @@ public class Horse {
        breed = "PLAIN";
        colour = "ORIGINAL";
        accessory = "NONE";
+
+       finishTime = 0.0;
+       totalRaces = 0;
+       totalWins = 0;
 
        horseImage = new ImageIcon("images/" + breed + "-" + colour + ".png").getImage();
     }
@@ -134,6 +142,22 @@ public class Horse {
 
     public void setConfidence(double newConfidence) {
         confidence = validateConfidence(newConfidence);
+    }
+    
+    public void incrementTotalRaces() {
+        totalRaces++;
+    }
+
+    public void addTime() {
+        finishTime++;
+    }
+
+    public void addWin() {
+        totalWins++;
+    }
+
+    public double getAverageSpeed() {
+        return (double) distanceTravelled / finishTime;
     }
     
 }
