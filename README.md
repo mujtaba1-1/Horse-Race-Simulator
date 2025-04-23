@@ -1,11 +1,6 @@
 # Horse Race Simulator
 
-The purpose of this project is to simulate horse races on different tracks and in different weather conditions. It contains the following features:
-
-1. Track Customisation (Including length, lanes, weather and shape)
-2. Horse Customisation (Including breed, colour and accessory)
-3. Real-time race simulation
-4. Horse Statistics shown at the end of each race
+The purpose of this project is to simulate horse races on different tracks and in different weather conditions.
 
 ## Setup Instructions
 
@@ -31,4 +26,43 @@ java --version
 javac -- version
 ```
 
+## Running The Program
+
+1. Open the following directory within your terminal:
+    ```
+    cd HorseRaceSimulator/Part2
+    ```
+2. Complile the Java files:
+    ```
+    javac Main.java
+    ```
+3. Execute the compiled class:
+    ```
+    java Main
+    ```
+
+The program should execute and run
+
+## Usage Guidelines
+
+1. **Track Customistaion**
+    The user can customise the following:
+    1. Number of lanes
+    2. Track length
+    3. Track Shape
+    4. Track Weather
+
+2. **Horse Customisation**
+    The user can customise each horse individually. The number of horses shown depends on the number of lanes. The customisations are as follows:
+    1. Horse breed
+    2. Coat colour
+    3. Given accessory
+
+    The horse name, confidence and image are also shown
+
+3. **Race Simulation**
+    After customising the horses, the race begins.
+
+4. **Results**
+    A finishing message is displayed, with a different message depending on the outcome of the race. The user is given an option to view the race stats. These stats display the horse information and how they performed on that track.
 
