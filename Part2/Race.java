@@ -16,6 +16,7 @@ public class Race extends JFrame {
     
     private int trackLength;
     private String weather;
+    private int laneCount;
 
     private ArrayList<Horse> horses;
 
@@ -28,6 +29,7 @@ public class Race extends JFrame {
         this.trackLength = trackLength;
         this.weather = weather;
         this.horses = horses;
+        this.laneCount = laneCount;
         
         // Create Race Frame
         setTitle("Horse Race");
@@ -44,6 +46,9 @@ public class Race extends JFrame {
         finishedFrame.setLocationRelativeTo(null);
         finishedFrame.setResizable(false);
 
+        JButton viewStatsButton = new JButton("View Stats");
+
+        finishedFrame.add(viewStatsButton);
 
         // Window listener to close both the race frame and finished frame
         finishedFrame.addWindowListener(new WindowAdapter() {
@@ -81,13 +86,15 @@ public class Race extends JFrame {
         new Thread(() -> {
             boolean finished = false;
 
-            for (Horse horse : horses) {
-                horse.goBackToStart();
+            for (int i = 0; i < laneCount; i++) {
+                horses.get(i).goBackToStart();
+                horses.get(i).incrementTotalRaces();
             }
 
             while (!finished) {
-                for (Horse horse : horses) {
-                    moveHorse(horse);
+                for (int i = 0; i < laneCount; i++) {
+                    moveHorse(horses.get(i));
+
                 }
 
                 // Schedule GUI update on the Event Dispatch Thread
@@ -95,8 +102,8 @@ public class Race extends JFrame {
 
                 if (raceWonBy() || allHorsesFallen()) { 
                     finished = true;
-                    for (Horse horse : horses) {
-                        horse.goBackToStart();
+                    for (int i = 0; i < laneCount; i++) {
+                        horses.get(i).goBackToStart();
                     }
                 }
 
@@ -119,8 +126,8 @@ public class Race extends JFrame {
     private boolean allHorsesFallen() {
         boolean allFallen = false;
 
-        for (Horse horse : horses) {
-            if (!horse.hasFallen()) {
+        for (int i = 0; i < laneCount; i++) {
+            if (!horses.get(i).hasFallen()) {
                 allFallen = false;
                 break;
             } else {
@@ -161,7 +168,7 @@ public class Race extends JFrame {
             //but will also will depends exponentially on confidence 
             //so if you double the confidence, the probability that it will fall is *2
 
-            double weatherEffect = weatherEffect(theHorse);
+            double weatherEffect = weatherEffect();
             double fallChance = (("Shoe".equals(theHorse.getAccessory()) ? 0.2 : 0.1) * (theHorse.getConfidence() + weatherEffect) * (theHorse.getConfidence() + weatherEffect));
 
             if (Math.random() < fallChance) {
@@ -171,7 +178,7 @@ public class Race extends JFrame {
         }
     }
 
-    private double weatherEffect(Horse horse) {
+    private double weatherEffect() {
             return switch (weather) {
                 case "Clear" -> -0.05;
                 case "Muddy" -> +0.05;
@@ -188,8 +195,10 @@ public class Race extends JFrame {
      * @return true if the horse has won, false otherwise.
      */
     private boolean raceWonBy() {
-        for (Horse horse : horses) {
+        for (int i = 0; i < laneCount; i++) {
+            Horse horse = horses.get(i);
             if (horse.getDistanceTravelled() == trackLength) {
+                horse.addWin();
                 horse.setConfidence(horse.getConfidence() + 0.15);
                 String winningMessage = String.format("%s has won the race! (Confidence: %.2f)\n", horse.getName(), horse.getConfidence());
                 finishedFrame.add(new JLabel(winningMessage));
