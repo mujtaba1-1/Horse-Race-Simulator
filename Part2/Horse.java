@@ -149,7 +149,7 @@ public class Horse {
     }
 
     public void addTime() {
-        finishTime++;
+        finishTime += 0.2;
     }
 
     public void addWin() {
@@ -157,7 +157,14 @@ public class Horse {
     }
 
     public double getAverageSpeed() {
-        return (double) distanceTravelled / finishTime;
+        return (double) (distanceTravelled * 10) / finishTime;
     }
     
+    public double getFinishTime() {
+        return finishTime;
+    }
+
+    public double getWinRatio() {
+        return ((double) totalWins / totalRaces * 100);
+    }
 }
