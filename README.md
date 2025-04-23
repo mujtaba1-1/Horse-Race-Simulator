@@ -26,11 +26,26 @@ java --version
 javac -- version
 ```
 
-## Running The Program
+## Running The Graphical Version
 
 1. Open the following directory within your terminal:
     ```
-    cd HorseRaceSimulator/Part2
+    cd Part2
+    ```
+2. Complile the Java files:
+    ```
+    javac Main.java
+    ```
+3. Execute the compiled class:
+    ```
+    java Main
+    ```
+
+## Running the Textual Version
+
+1. Open the following directory within your terminal:
+    ```
+    cd Part1
     ```
 2. Complile the Java files:
     ```
@@ -44,6 +59,8 @@ javac -- version
 The program should execute and run
 
 ## Usage Guidelines
+
+The following is the usage guidelines for the graphical version of the program:
 
 1. **Track Customistaion**
     The user can customise the following:
