@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -47,14 +48,35 @@ public class Race extends JFrame {
         finishedFrame.setResizable(false);
 
         JButton viewStatsButton = new JButton("View Stats");
-
+        viewStatsButton.setFocusable(false);
         finishedFrame.add(viewStatsButton);
+
+        viewStatsButton.addActionListener((ActionEvent e) -> {
+            Statistics stats = new Statistics(horses, laneCount);
+            finishedFrame.dispose();
+            stats.setVisible(true);
+
+            // Window listener to close both the race frame and finished frame
+            stats.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    dispose();
+                    for (int i = 0; i < laneCount; i++) {
+                        horses.get(i).goBackToStart();
+                    }
+                    hc.setInteractable(true);
+                }
+            });
+        });
 
         // Window listener to close both the race frame and finished frame
         finishedFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 dispose();
+                for (int i = 0; i < laneCount; i++) {
+                    horses.get(i).goBackToStart();
+                }
                 hc.setInteractable(true);
             }
         });
@@ -102,9 +124,6 @@ public class Race extends JFrame {
 
                 if (raceWonBy() || allHorsesFallen()) { 
                     finished = true;
-                    for (int i = 0; i < laneCount; i++) {
-                        horses.get(i).goBackToStart();
-                    }
                 }
 
                 try {
@@ -154,7 +173,7 @@ public class Race extends JFrame {
         //so only run if it has not fallen
         if  (!theHorse.hasFallen()) {
             //the probability that the horse will move forward depends on the confidence;
-
+            theHorse.addTime();
             double moveChance = ("Bridle".equals(theHorse.getAccessory()) ? 0.08 : 0) + theHorse.getConfidence();
             if (moveChance > 1) {
                 moveChance = 1.0;
