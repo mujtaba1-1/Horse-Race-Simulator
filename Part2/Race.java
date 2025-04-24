@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 /**
- * A three-horse race, each horse running in its own lane
- * for a given distance
+ * This class runs the race between the horses.
  * 
  * @author Muhammad Mujtaba Butt
  * @version 7.0
  */
 public class Race extends JFrame {
     
+    // Instance variables
     private int trackLength;
     private String weather;
     private int laneCount;
@@ -25,6 +25,16 @@ public class Race extends JFrame {
 
     private JFrame finishedFrame;
 
+    /**
+     * Constructor for the Race class
+     * 
+     * @param laneCount the number of lanes
+     * @param trackLength the length of the track
+     * @param trackShape the shape of the track
+     * @param weather the weather condition
+     * @param horses the list of horses in the race
+     * @param hc the horse customisation panel to prevent usage during race
+     */
     public Race(int laneCount, int trackLength, String trackShape, String weather, ArrayList<Horse> horses, HorseCustomisation hc) {
         // Initialise instance variables
         this.trackLength = trackLength;
@@ -127,7 +137,7 @@ public class Race extends JFrame {
                 }
 
                 try {
-                    Thread.sleep(100); // Sleep in the background thread
+                    Thread.sleep(100); // Sleep in the background thread for 100ms
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -137,7 +147,7 @@ public class Race extends JFrame {
     
     /**
      * Check if all horses have fallen.
-     * If they have, print a message to the terminal
+     * If they have, show the message in the finished frame
      * and return true.
      * 
      * @return true if all horses have fallen, false otherwise
@@ -172,8 +182,8 @@ public class Race extends JFrame {
         //if the horse has fallen it cannot move, 
         //so only run if it has not fallen
         if  (!theHorse.hasFallen()) {
-            //the probability that the horse will move forward depends on the confidence;
             theHorse.addTime();
+            //the probability that the horse will move forward depends on the confidence;
             double moveChance = ("Bridle".equals(theHorse.getAccessory()) ? 0.08 : 0) + theHorse.getConfidence();
             if (moveChance > 1) {
                 moveChance = 1.0;
@@ -183,11 +193,10 @@ public class Race extends JFrame {
                theHorse.moveForward();
             }
             
-            //the probability that the horse will fall is very small (max is 0.1)
-            //but will also will depends exponentially on confidence 
-            //so if you double the confidence, the probability that it will fall is *2
 
             double weatherEffect = weatherEffect();
+
+            //the probability that the horse will fall depends on the confidence and the weather
             double fallChance = (("Shoe".equals(theHorse.getAccessory()) ? 0.2 : 0.1) * (theHorse.getConfidence() + weatherEffect) * (theHorse.getConfidence() + weatherEffect));
 
             if (Math.random() < fallChance) {
@@ -197,6 +206,11 @@ public class Race extends JFrame {
         }
     }
 
+    /**
+     * Returns the weather effect on the horse's performance
+     * 
+     * @return the weather effect
+     */
     private double weatherEffect() {
             return switch (weather) {
                 case "Clear" -> -0.05;
@@ -208,9 +222,9 @@ public class Race extends JFrame {
 
     /** 
      * Determines if a horse has won the race
-     * If they have won, print a winning message to the terminal
+     * If they have won, increment their win count and confidence
+     * and show the message in the finished frame
      *
-     * @param theHorse The horse we are testing
      * @return true if the horse has won, false otherwise.
      */
     private boolean raceWonBy() {
