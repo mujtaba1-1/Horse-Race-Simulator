@@ -1,6 +1,14 @@
 import java.awt.*;
 import javax.swing.*;
 
+/**
+ * This class represents the Track Customisation panel of the GUI.
+ * It allows the user to set the number of lanes, track length, track shape and weather conditions
+ * 
+ * @author Muhammad Mujtaba Butt
+ * @version 1.0
+ */
+
 class TrackCustomisation extends JPanel {
     private JSpinner laneSpinner;
     private JSpinner lengthSpinner;
@@ -8,6 +16,10 @@ class TrackCustomisation extends JPanel {
     private JComboBox<String> weatherSelector;
     private JButton applyButton;
 
+    /**
+     * Constructor for the TrackCustomisation class
+     * Sets up the layout and components of the panel
+     */
     public TrackCustomisation() {
         setPreferredSize(new Dimension(1000, 800));
         setLayout(new BorderLayout());

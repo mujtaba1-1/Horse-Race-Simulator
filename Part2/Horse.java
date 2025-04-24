@@ -34,6 +34,10 @@ public class Horse {
     //Constructor of class Horse
     /**
      * Constructor for objects of class Horse
+     * Initalises all the horse fields
+     * 
+     * @param horseName the name of the horse
+     * @param horseConfidence the confidence level of the horse (0.0 - 1.0)
      */
     public Horse(String horseName, double horseConfidence) {
        name = horseName;
@@ -57,6 +61,9 @@ public class Horse {
      * Validates the confidence level of the horse
      * to ensure it does not exceed 1.0 or fall below 0.0.
      * If it does, it sets the confidence to 0.99 or 0.01 respectively.
+     * 
+     * @param confidence the confidence level to be validated
+     * @return the validated confidence level
      */
     private double validateConfidence(double confidence) {
         if (confidence >= 1.0) {
@@ -99,10 +106,12 @@ public class Horse {
         return accessory;
     }
 
+    // Sets the horse image based on the breed and colour
     private void setHorseImage() {
         horseImage = new ImageIcon("images/" + breed + "-" + colour + ".png").getImage();
     }
 
+    // Returns the horse image, or the fallen image if the horse has fallen
     public Image getHorseImage() {
         return hasFallen() ? fallenImage : horseImage;
     }
@@ -115,6 +124,7 @@ public class Horse {
         return horseImage.getWidth(null);
     }
 
+    // Returns the confidence level of the horse, adjusted if it has a saddle
     public double getConfidence() {
         return accessory.equals("Saddle") ? validateConfidence(confidence + 0.08) : confidence;
     }

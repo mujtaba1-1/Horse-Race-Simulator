@@ -4,6 +4,14 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.*;
 
+/**
+ * This class represents the horse customisation panel
+ * where users can select horse attributes and apply changes.
+ * 
+ * @author Muhammad Mujtaba Butt
+ * @version 1.0
+ */
+
 class HorseCustomisation extends JPanel {
    
     private JButton backButton;
@@ -11,11 +19,20 @@ class HorseCustomisation extends JPanel {
 
     private boolean isInteractable = true;
 
+
+    /**
+     * Constructor for the HorseCustomisation class.
+     * It sets up the layout, heading, horse selection panel,
+     * customisation options, and footer buttons.
+     * 
+     * @param laneCount The number of lanes
+     * @param horses The list of horses to be customised
+     */
     public HorseCustomisation(int laneCount, ArrayList<Horse> horses) {
         setPreferredSize(new Dimension(1000, 800));
         setLayout(new BorderLayout());
 
-        // Heading
+        // Heading panel
         JPanel headingPanel = new JPanel();
         headingPanel.setPreferredSize(new Dimension(1000, 80));
         headingPanel.setLayout(new BorderLayout());
@@ -40,6 +57,12 @@ class HorseCustomisation extends JPanel {
         horseSelectionPanel.setLayout(new GridLayout(laneCount, 1));
 
 
+        /**
+         * For each horse within the laneCount,
+         * it creates a JLabel with the horse's name,
+         * and adds a mouse listener to show the horse's
+         * details and customisation options when clicked.
+         */
         for (int i = 0; i < laneCount; i++) {
             
             Horse horse = horses.get(i);
@@ -104,6 +127,8 @@ class HorseCustomisation extends JPanel {
                     applyButton.setFont(new Font("Poppins", Font.PLAIN, 16));
                     customisationPanel.add(applyButton);
 
+                    // Action Listener for Apply Button which updates the horse's attributes
+                    // and refreshes the panel
                     applyButton.addActionListener(e1 -> {
                         String selectedBreed = (String) breedComboBox.getSelectedItem();
                         String selectedColor = (String) colorComboBox.getSelectedItem();
@@ -156,6 +181,7 @@ class HorseCustomisation extends JPanel {
         add(footerPanel, BorderLayout.SOUTH);
     }
 
+    // Getters for buttons
     public JButton getBackButton() {
         return backButton;
     }
@@ -164,6 +190,7 @@ class HorseCustomisation extends JPanel {
         return startButton;
     }
 
+    // Iterates over each component in the panel and sets its enabled state
     public void setInteractable(boolean interactable) {
         isInteractable = interactable;
         for (Component component : this.getComponents()) {

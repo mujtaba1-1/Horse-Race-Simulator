@@ -3,14 +3,35 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.util.ArrayList;
 
+/**
+ * OvalTrack class that extends the Track class
+ * This class is responsible for painting the oval track and the horses on it
+ * It uses parametric equations to calculate the positions of the horses on the track
+ * 
+ * @author Muhammad Mujtaba Butt
+ * @version 1.0
+ */
+
 class OvalTrack extends Track {
 
     private final int lanePadding = 30;
 
+    /**
+     * Constructor for objects of class OvalTrack
+     * @param trackLength the length of the racetrack (in metres/yards...)
+     * @param lanes the number of lanes in the track
+     * @param horses the list of horses participating
+     */
     public OvalTrack(int trackLength, int lanes, ArrayList<Horse> horses) {
         super(trackLength, lanes, horses);
     }
 
+
+    /**
+     * Paints the oval track and the horses on it
+     * making use of parametric equations
+     * @param g the Graphics object to paint on
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
